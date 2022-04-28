@@ -1,1 +1,1 @@
-# sorting-animation
+# algorithm-visualizer
