@@ -1,19 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.Month;
 import java.util.*;
 
-public class InitGUI implements ActionListener, ItemListener {
+public class InitGUI implements ActionListener {
     private JFrame f; // The window itself
     private JButton start;
     private JButton generate;
     private JPanel mainPanel; // Panel containing all elements
     private JComboBox algorithmPanel;
-    private int[] arr;
-    private boolean startFlag = false;
     private Random random = new Random();
-    
+
+    private int[] arr = new int[1000];
+    private Sort sort = new Sort(arr);
 
     public InitGUI() {
         /* Initialize input GUI */
@@ -35,21 +34,25 @@ public class InitGUI implements ActionListener, ItemListener {
         algorithmPanel.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.0f)));
         algorithmPanel.setRenderer(new Renderer("Select a Sorting Algorithm"));
         algorithmPanel.setSelectedIndex(-1);
-
+        algorithmPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedAlgo = (String) algorithmPanel.getSelectedItem();
+                System.out.println(selectedAlgo);
+            }
+        });
+        
         /* Generate array with random data */
         generate = new JButton("Generate");
         generate.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == generate) {
-                    arr = new int[1000];
-                    
-                    for (int i = 0; i < arr.length; i++) {
-                        arr[i] = random.nextInt(Integer.MAX_VALUE);
-                     }
-                     System.out.println("Array has been generated.");
-                     System.out.println(Arrays.toString(arr));
+            public void actionPerformed(ActionEvent e) { // Generates random array
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = random.nextInt(Integer.MAX_VALUE);
                 }
+
+                System.out.println(Arrays.toString(arr));
+                System.out.println("Array has been generated.");
             }
         });
 
@@ -58,13 +61,17 @@ public class InitGUI implements ActionListener, ItemListener {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == start) {
-                    startFlag = true;
-                    new GraphGUI();
+                String selectedAlgo = (String) algorithmPanel.getSelectedItem(); // Grabs item in dropdown and casts it into a String
+        
+                switch (selectedAlgo) {
+                    case "Selection Sort": 
+                        System.out.println("Graph GUI begun.");
+                        sort.beginSelectionSort(arr); 
+                        new GraphGUI();
                 }
             }
         });
-
+    
 
         f.add(generate, BorderLayout.WEST);
         f.add(start, BorderLayout.EAST);
@@ -73,7 +80,16 @@ public class InitGUI implements ActionListener, ItemListener {
         f.pack();
         f.setVisible(true);
     }
-
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+    
+    public int[] getArray() {
+            return arr;
+        }
     class Renderer extends JLabel implements ListCellRenderer { // Default drop down menu text creation
         final String stockText;
 
@@ -88,30 +104,5 @@ public class InitGUI implements ActionListener, ItemListener {
             else setText(value.toString()); // Else, show the selected text.
             return this;
         }
-
-        
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-        String selection = (String) e.getSource();
-        
-        switch(selection) {
-            case "Selection Sort": 
-        }
-    }
-
-    public static void main(String[] args) {
-        new InitGUI();
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public int[] getArray() {
-        return arr;
     }
 }
