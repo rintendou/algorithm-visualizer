@@ -1,5 +1,5 @@
-import src.java.*;
-import src.java.gui.InitGUI;
+import src.java.gui.*;
+
 public class Main {
     public static void main(String[] args) {
         new InitGUI();
