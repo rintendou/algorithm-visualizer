@@ -1,6 +1,5 @@
 package src.java.gui;
 
-import src.java.algorithms.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,8 +13,7 @@ public class InitGUI implements ActionListener {
     private JComboBox algorithmPanel;
     private Random random = new Random();
 
-    private int[] arr = new int[1000];
-    private Sort sort = new Sort(arr);
+    private int[] randomArray = new int[100];
 
     public InitGUI() {
         /* Initialize input GUI */
@@ -28,15 +26,15 @@ public class InitGUI implements ActionListener {
 
         /* Main Panel Init*/
         mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(Color.LIGHT_GRAY);
+        mainPanel.setBackground(Color.DARK_GRAY);
         mainPanel.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.0f)));
 
         /* Algorithm Dropdown Selection Panel Setup*/
-        String[] sorting = {"Selection Sort", "Bubble Sort (WIP)", "Insertion Sort (WIP)", "Merge Sort (WIP)", "Quick Sort (WIP"};
+        String[] sorting = {"Selection Sort", "Bubble Sort (WIP)", "Insertion Sort (WIP)", "Merge Sort (WIP)", "Quick Sort (WIP)"};
         algorithmPanel = new JComboBox(sorting);
         algorithmPanel.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.0f)));
         algorithmPanel.setRenderer(new Renderer("Select a Sorting Algorithm"));
-        algorithmPanel.setSelectedIndex(-1);
+        algorithmPanel.setSelectedIndex(-1); // Allows for Renderer class to display default text.
         algorithmPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,17 +43,17 @@ public class InitGUI implements ActionListener {
             }
         });
         
-        /* Generate array with random data */
+        /* Generate randomArray with random data */
         generate = new JButton("Generate");
         generate.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { // Generates random array
-                for (int i = 0; i < arr.length; i++) {
-                    arr[i] = random.nextInt(Integer.MAX_VALUE);
+            public void actionPerformed(ActionEvent e) { // Generates random values and store values into initial array.
+                for (int i = 0; i < randomArray.length; i++) {
+                    randomArray[i] = random.nextInt(0, 1000); 
                 }
 
-                System.out.println(Arrays.toString(arr));
-                System.out.println("Array has been generated.");
+                System.out.println(Arrays.toString(randomArray));
+                System.out.println("randomArray has been generated.");
             }
         });
 
@@ -64,18 +62,16 @@ public class InitGUI implements ActionListener {
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedAlgo = (String) algorithmPanel.getSelectedItem(); // Grabs item in dropdown and casts it into a String
-        
-                switch (selectedAlgo) {
-                    case "Selection Sort": 
-                        System.out.println("Graph GUI begun.");
-                        sort.beginSelectionSort(arr); 
-                        new GraphGUI();
+                if (algorithmPanel.getSelectedIndex() == -1) {
+                    System.out.println("Select a valid algorithm");
+                    return;
                 }
+
+                String selectedAlgo = getAlgo(); // Grabs item in dropdown and casts it into a String
+                new SortingGUI(selectedAlgo, randomArray);
             }
         });
-    
-
+        
         f.add(generate, BorderLayout.WEST);
         f.add(start, BorderLayout.EAST);
         f.add(algorithmPanel, BorderLayout.NORTH);
@@ -83,17 +79,25 @@ public class InitGUI implements ActionListener {
         f.pack();
         f.setVisible(true);
     }
-    
+  
     @Override
     public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
             
         }
     
-    public int[] getArray() {
-            return arr;
+    public int[] getRandomArray() {
+        return randomArray;
     }
-    class Renderer extends JLabel implements ListCellRenderer { // Default drop down menu text creation
+
+    public int getRandomArraySize() {
+        return randomArray.length;
+    }
+
+    public String getAlgo() {
+        return (String) algorithmPanel.getSelectedItem();
+    }
+    class Renderer extends JLabel implements ListCellRenderer { // Default text in algorithmPanel
         final String stockText;
 
         public Renderer(String stockText) { // Constructor for base text
