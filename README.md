@@ -1,6 +1,6 @@
 # Algorithm Visualizer
 
-## Driver can be found in src/java/new_gui/Visualizer.java
+## Driver code can be found in src/java/new_gui/Visualizer.java
 
 ### Currently supports the following sorting algorithms
 1. Bubble Sort
