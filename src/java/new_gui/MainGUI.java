@@ -22,6 +22,7 @@ public class MainGUI extends JFrame {
     private JButton generateButton;
 
     private int sizeScale; // Scales components so  graph is not too big.
+    private String selectedAlgo;
 
     private final String[] sortAlgorithms = {"Selection Sort", "Insertion Sort", "Merge Sort", "Bubble Sort"};
     public static Integer[] toBeSorted; // Uses wrapper class because JFrame works with objects. Saves us the effort for converting from int -> Integer.
@@ -38,7 +39,7 @@ public class MainGUI extends JFrame {
         algoPanel = new JComboBox<>(sortAlgorithms);
         buttonPanel = new JPanel();
         grid = new GridBagConstraints();
-
+        
         algoPanel.setSelectedIndex(-1);
         algoPanel.setRenderer(new Renderer("Select a Sorting Algorithm"));
         grid.insets = new InsetsUIResource(0, 1, 0, 1); // Gaps between each bar
@@ -48,10 +49,13 @@ public class MainGUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                selectedAlgo = (String) algoPanel.getSelectedItem();
+
                 if (algoPanel.getSelectedIndex() == -1) {
                     System.out.println("Select a valid algorithm");
                     return;
                 }
+                Visualizer.beginSort(selectedAlgo);
             }
         });
 
@@ -70,21 +74,17 @@ public class MainGUI extends JFrame {
         });
 
         /* Adding all panels into their respective panels. */
-        buttonPanel.add(startButton);
-        buttonPanel.add(generateButton);
+        // buttonPanel.add(generateButton);
         buttonPanel.add(algoPanel);
+        buttonPanel.add(startButton);
 
         /* Adding all panels into the main frame */
         main.add(buttonPanel, BorderLayout.NORTH);
         main.add(arrayPanel);
 
         add(main);
-        setBackground(Color.DARK_GRAY);
-        setExtendedState(JFrame.MAXIMIZED_BOTH); // Fullscreens the application
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centered window
 
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Fullscreens the application
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -111,6 +111,10 @@ public class MainGUI extends JFrame {
                 
             }
         });
+
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Centered window
     }
 
     public void draw(Integer[] bar) {
@@ -122,6 +126,7 @@ public class MainGUI extends JFrame {
         for (int i = 0; i < Visualizer.dataCount; i++) {
             barPanels[i] = new JPanel();
             barPanels[i].setPreferredSize(new DimensionUIResource(Visualizer.barWidth, bar[i] * sizeScale)); // Set the dimensions of each bar, based on the data specified in the parameters.
+            barPanels[i].setBackground(Color.LIGHT_GRAY);
             arrayPanel.add(barPanels[i], grid);
         }
         repaint(); // Uses Swing to paint the bar's onto the screen.
@@ -133,24 +138,25 @@ public class MainGUI extends JFrame {
         redraw(bars, -1);
     }
 
-    public void redraw(Integer[] bars, int swappping) {
-        redraw(bars, swappping, -1);
+    public void redraw(Integer[] bars, int found) {
+        redraw(bars, found, -1);
     }
 
-    public void redraw(Integer[] bars, int swapping, int comparing) {
-        redraw(bars, swapping, comparing, -1);
+    public void redraw(Integer[] bars, int found, int comparing) {
+        redraw(bars, found, comparing, -1);
     }
 
-    public void redraw(Integer[] bars, int swapping, int comparing, int reading) {
-        arrayPanel.removeAll();
+    public void redraw(Integer[] bars, int found, int compared, int read) {
+        /* Redraws the bar's in their newly sorted locations. */
+        arrayPanel.removeAll(); 
 
         for (int i = 0; i < barPanels.length; i++) {
             barPanels[i] = new JPanel();
             barPanels[i].setPreferredSize(new Dimension(Visualizer.barWidth, bars[i] * sizeScale));
 
-            if (i == swapping) barPanels[i].setBackground(Color.RED);
-            else if (i == comparing) barPanels[i].setBackground(Color.YELLOW);
-            else if (i == reading) barPanels[i].setBackground(Color.GREEN);
+            if (i == found) barPanels[i].setBackground(Color.RED);
+            else if (i == compared) barPanels[i].setBackground(Color.YELLOW);
+            else if (i == read) barPanels[i].setBackground(Color.GREEN);
             else barPanels[i].setBackground(Color.BLUE);
             arrayPanel.add(barPanels[i], grid);
         }
