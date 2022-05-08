@@ -14,6 +14,3 @@
 ### To-do
 * Alter data size via GUI
 * Alter speed of animation/algorithm via GUI
-
-## Preview
-![sorting](https://user-images.githubusercontent.com/83848755/167278499-e903cf3e-fbca-4b5c-afaf-e508d8e4e1d4.gif)
