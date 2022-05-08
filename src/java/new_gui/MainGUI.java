@@ -126,7 +126,7 @@ public class MainGUI extends JFrame {
         for (int i = 0; i < Visualizer.dataCount; i++) {
             barPanels[i] = new JPanel();
             barPanels[i].setPreferredSize(new DimensionUIResource(Visualizer.barWidth, bar[i] * sizeScale)); // Set the dimensions of each bar, based on the data specified in the parameters.
-            barPanels[i].setBackground(Color.LIGHT_GRAY);
+            barPanels[i].setBackground(Color.GRAY);
             arrayPanel.add(barPanels[i], grid);
         }
         repaint(); // Uses Swing to paint the bar's onto the screen.
@@ -157,7 +157,7 @@ public class MainGUI extends JFrame {
             if (i == found) barPanels[i].setBackground(Color.RED);
             else if (i == compared) barPanels[i].setBackground(Color.YELLOW);
             else if (i == read) barPanels[i].setBackground(Color.GREEN);
-            else barPanels[i].setBackground(Color.BLUE);
+            else barPanels[i].setBackground(Color.GRAY);
             arrayPanel.add(barPanels[i], grid);
         }
         repaint();
